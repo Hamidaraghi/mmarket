@@ -1,0 +1,19 @@
+.invalid {
+    border: 1px solid #ea6153;
+}
+.rtl{
+    direction: rtl;
+    align-content: center;
+    text-align: center;
+}
+.invalid {
+    border: 1px solid #ea6153;
+}
+.center-vertical-horizontal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .button-spinner {
+    display: flex;
+  }

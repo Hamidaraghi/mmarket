@@ -1,0 +1,97 @@
+<ion-menu [content]="content" >
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>ناوبری</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="card-background-page">
+    <ion-card>
+      <img style="background-color:rgba(240, 8, 182, 0.315)" src="https://mmarket.ir/menuimage.png" />
+      <!-- <div class="card-title">MMarket</div>
+      <div class="card-subtitle">www.mmarket.ir</div> -->
+    </ion-card>
+    <ion-list no-lines>
+      <div *ngFor="let cat of categories; let i=index" [ngClass]="{active: isLevel1Shown('idx'+i)}" text-wrap
+        detail-push>
+        <ion-item>
+          <ion-img *ngIf="cat.image" (click)="openCategoryPage(cat.id)" menuClose style="width: 50px; height: 50px;" [src]="cat.image.src"
+            item-left></ion-img>
+            <ion-img *ngIf="!cat.image" (click)="openCategoryPage(cat.id)" menuClose style="width: 50px; height: 50px;" src="assets/imgs/no-image.png"    item-left></ion-img>
+          <h2 (click)="openCategoryPage(cat.id)" menuClose>
+            {{cat.name}}
+          </h2>
+          <ion-icon color="success" no-padding large (click)="toggleLevel1('idx'+i)" item-right [name]="isLevel1Shown('idx'+i) ? 'arrow-dropdown' : 'arrow-dropright'"
+            style="align-content: top; align-items: top; align-self: top; box-align: top"></ion-icon>
+        </ion-item>
+
+        <div *ngIf="isLevel1Shown('idx'+i)">
+          <ion-item *ngFor="let sub of cat.subCategories;" text-wrap (click)="openCategoryPage(sub.id)" color="gray"
+            menuClose style="padding-right:80px">
+            <h4>
+              {{sub.name}}
+            </h4>
+          </ion-item>
+        </div>
+      </div>
+
+      <ion-item-divider color="danger">حساب کاربری</ion-item-divider>
+      <!-- امور کاربری -->
+      <!-- کاربری که وارد نشده -->
+      <ion-item *ngIf="!loggedIn" (click)="openPage('signup')" menuClose>
+        <ion-icon name="md-clipboard" item-left large>
+        </ion-icon>
+        <h2>ثبت نام</h2>
+        <p>برای یک حساب کاربری جدید</p>
+      </ion-item>
+      <ion-item *ngIf="!loggedIn" (click)="openPage('login')" menuClose>
+        <ion-icon name="log-in" item-left large>
+        </ion-icon>
+        <h2>ورود</h2>
+        <p>وارد حساب کاربری خود شوید</p>
+      </ion-item>
+
+      <!-- اگر کاربر وارد شده باشد -->
+      <ion-item *ngIf="loggedIn"  (click)="openPage('MyaccountPage')" menuClose >
+        <ion-icon name="contact" item-left large></ion-icon>
+        <h2>{{this.user.firstname?this.user.firstname:this.user.username||""}} </h2>
+        <p> خوش آمدی؛ ویرایش اطلاعات کاربری</p>
+      </ion-item>
+
+      <ion-item *ngIf="loggedIn" (click)="openPage('cart')" menuClose>
+        <ion-icon name="cart" item-left large></ion-icon>
+        <h2>سبد خرید </h2>
+        <p>مشاهده اقلام</p>
+      </ion-item>
+
+      <ion-item *ngIf="loggedIn" (click)="openPage('myorders')" menuClose>
+        <ion-icon name="logo-buffer" item-left large></ion-icon>
+        <h2>سفارش های من</h2>
+        <p>مشاهده سفارشات</p>
+      </ion-item>
+
+
+      <ion-item  (click)="openLink('https://mmarket.ir/contactus/')" menuClose>
+        <ion-icon name="call" item-left></ion-icon>
+        <h2>ارتباط با ما</h2>
+        <p> بیان دیدگاه ها، انتقادات و پیشنهاد ها</p>
+      </ion-item>
+
+      <ion-item  (click)="openLink('https://mmarket.ir/rules/')" menuClose>
+        <ion-icon name="git-pull-request" item-left></ion-icon>
+        <h2>قوانین و مقررات</h2>
+        <p>قوانین آیین نامه ها و خط مشی ام مارکت</p>
+      </ion-item>
+
+
+      <ion-item *ngIf="loggedIn" (click)="openPage('logout')">
+        <ion-icon name="log-out" item-left></ion-icon>
+        <h2>خروج </h2>
+        <p> از حساب کاربری</p>
+      </ion-item>
+
+    </ion-list>
+  </ion-content>
+
+</ion-menu>
+<ion-nav #content [root]="homePage"></ion-nav>

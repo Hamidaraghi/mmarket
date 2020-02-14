@@ -1,0 +1,157 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>ویرایش اطلاعات کاربر</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div [formGroup]="updateUserValidator">
+    <ion-list>
+      <ion-item-divider color="danger">مشخصات کاربر</ion-item-divider>
+      <ion-item>
+        <ion-label>نام</ion-label>
+        <ion-input type="text" [(ngModel)]="newUser.first_name" formControlName="firstName"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!updateUserValidator.controls.firstName.valid  && (updateUserValidator.controls.firstName.dirty || submitAttempt)">
+        <p style="color:red">لطفا یک نام معتبر وارد نمایید.</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>نام خانوادگی</ion-label>
+        <ion-input type="text" [(ngModel)]="newUser.last_name" formControlName="lastName"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!updateUserValidator.controls.lastName.valid  && (updateUserValidator.controls.lastName.dirty || submitAttempt)">
+        <p style="color:red">لطفا یک نام خانوادگی معتبر وارد نمایید.</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>*ایمیل</ion-label>
+        <ion-input type="email" [(ngModel)]="newUser.email" placeholder="example@gmail.dom :مثال" (blur)="checkEmail()" formControlName="email"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!updateUserValidator.controls.email.valid  && (updateUserValidator.controls.email.dirty || submitAttempt)">
+        <p style="color:red">لطفا یک ایمیل معتبر وارد نمایید.</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>تغییر گذرواژه</ion-label>
+        <ion-checkbox checked="false" [(ngModel)]="passChange" [ngModelOptions]="{standalone: true}"></ion-checkbox>
+      </ion-item>
+      <div *ngIf="passChange">
+        <ion-item>
+          <ion-label>*گذرواژه جدید</ion-label>
+          <ion-input #pass type="password" [(ngModel)]="newUser.password" formControlName="password"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="!updateUserValidator.controls.password.valid  && (updateUserValidator.controls.password.dirty || submitAttempt)">
+          <p style="color:red">حداقل طول گذرواژه 6 کاراکتر باید باشد</p>
+        </ion-item>
+        <ion-item>
+          <ion-label>*تکرار گذرواژه جدید</ion-label>
+          <ion-input #repass type="password" [(ngModel)]="newUser.confirm_password" formControlName="password"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="pass?.value != repass?.value">
+          <p style="color:red">گذرواژه و تکرار آن یکسان نیستند</p>
+        </ion-item>
+      </div>
+
+
+      <ion-item-divider color="danger"> آدرس ارسال صورتحساب سفارش</ion-item-divider>
+      <ion-item>
+        <ion-label>شرکت</ion-label>
+        <ion-input [(ngModel)]="newUser.billing.company" type="text" [ngModelOptions]="{standalone: true}"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>آدرس 1 *</ion-label>
+        <ion-textarea [(ngModel)]="newUser.billing.address_1" type="text" max-length="80" formControlName="address"></ion-textarea>
+      </ion-item>
+      <ion-item *ngIf="!updateUserValidator.controls.address.valid  && (updateUserValidator.controls.address.dirty || submitAttempt)">
+        <p style="color:red">طول آدرس نباید کمتر از 10 نویسه و بیشتر از 100 نویسه باشد.</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>آدرس 2</ion-label>
+        <ion-textarea [(ngModel)]="newUser.billing.address_2" type="text" max-length="80" [ngModelOptions]="{standalone: true}"></ion-textarea>
+      </ion-item>
+      <ion-item hidden>
+        <ion-label>کشور</ion-label>
+        <ion-select [(ngModel)]="newUser.billing.country" [ngModelOptions]="{standalone: true}">
+          <ion-option value="Iran" selected="true">ایران</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>استان-شهر</ion-label>
+        <ion-select [(ngModel)]="newUser.billing.state" [ngModelOptions]="{standalone: true}" interface="action-sheet">
+          <ion-option *ngFor="let state of states" value={{state.code}} >{{state.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>کد پستی یا پلاک *</ion-label>
+        <ion-input [(ngModel)]="newUser.billing.postcode" type="number" clearInput formControlName="postCode"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!updateUserValidator.controls.postCode.valid  && (updateUserValidator.controls.postCode.dirty || submitAttempt)">
+        <p style="color:red">لطفا یک کد پستی یا پلاک معتبر وارد نمایید. حداکثر 10 رقم</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>* تلفن همراه</ion-label>
+        <ion-input [(ngModel)]="newUser.billing.phone" type="tel" clearInput formControlName="phone"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!updateUserValidator.controls.phone.valid  && (updateUserValidator.controls.phone.dirty || submitAttempt)">
+        <p style="color:red">یک شماره تماس معتبر حداکثر تا 11 رقم وارد نمایید. </p>
+      </ion-item>
+      <ion-item>
+        <ion-label>سفارش، به آدرس فوق ارسال شود</ion-label>
+        <ion-checkbox checked="true" (ionChange)="setBillingToShipping()"></ion-checkbox>
+      </ion-item>
+    </ion-list>
+    <ion-item>
+      <ion-label>قوانین و مقررات را می پذیرم</ion-label>
+      <ion-checkbox checked="false" formControlName="rules" [class.invalid]="!updateUserValidator.controls.rules.valid && (updateUserValidator.controls.rules.dirty || submitAttempt)"></ion-checkbox>
+    </ion-item>
+    <ion-item *ngIf="!updateUserValidator.controls.rules.valid  && (updateUserValidator.controls.rules.dirty || submitAttempt)">
+      <p style="color:red">شما برای ادامه می بایست قوانین را بپذیرید! </p>
+    </ion-item>
+
+
+    <!-- Shipping Address -->
+
+    <ion-list *ngIf="!billing_shipping_same">
+      <ion-item-divider color="danger">آدرس ارسال کالای سفارش</ion-item-divider>
+
+      <ion-item>
+        <ion-label>شرکت</ion-label>
+        <ion-input [(ngModel)]="newUser.shipping.company" type="text" [ngModelOptions]="{standalone: true}"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>آدرس 1</ion-label>
+        <ion-textarea [(ngModel)]="newUser.shipping.address_1" type="text" [ngModelOptions]="{standalone: true}"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label>آدرس 2</ion-label>
+        <ion-textarea [(ngModel)]="newUser.shipping.address_2" type="text" max-length="80" [ngModelOptions]="{standalone: true}"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label>کشور</ion-label>
+        <ion-select [(ngModel)]="newUser.shipping.country" [ngModelOptions]="{standalone: true}">
+          <ion-option value="Iran" selected="true">ایران</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>استان</ion-label>
+        <ion-select>
+          <ion-option value="Golestan" selected="true"> گلستان</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>شهر</ion-label>
+        <ion-input [(ngModel)]="newUser.shipping.city" type="text" [ngModelOptions]="{standalone: true}"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>کد پستی یا پلاک *</ion-label>
+        <ion-input [(ngModel)]="newUser.shipping.postcode" type="number" [ngModelOptions]="{standalone: true}" clearInput></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>تلفن</ion-label>
+        <ion-input [(ngModel)]="newUser.shipping.phone" type="tel" [ngModelOptions]="{standalone: true}" clearInput></ion-input>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <button ion-button block round color="danger" (click)="signup()" [disabled]="newUser.password != newUser.confirm_password ">ذخیره</button>
+</ion-footer>

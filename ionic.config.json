@@ -1,0 +1,7 @@
+{
+  "name": "MMarket",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}

@@ -1,0 +1,79 @@
+<ion-header>
+
+  <ion-navbar>
+    
+    <ion-title>سبد خرید</ion-title>
+
+    <ion-buttons  end >
+        <button ion-button block round color="danger" (click)="removeCart()">
+            <ion-icon name="trash" ></ion-icon> &nbsp;
+          تخلیه سبد خرید </button>
+    </ion-buttons>
+
+  </ion-navbar>
+</ion-header>
+
+<ion-content dir="rtl">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content pullingIcon="arrow-dropdown"
+      pullingText="برای تازه سازی بکشید"
+      refreshingSpinner="dots"
+      ></ion-refresher-content>
+  </ion-refresher>
+  <ion-card *ngFor="let item of cartItems; let i = index" >
+    <ion-item  (click)="openProductPage(item.product)" text-wrap>
+      <ion-thumbnail item-left>
+        <img [src]="item.product.images[0].src">
+      </ion-thumbnail>
+      <h2>{{item.product.name}}</h2>
+      <p>{{item.qty}} * {{item.product.price | number}} = {{item.qty * item.product.price | number}} تومان </p>
+    </ion-item>
+
+    <ion-item class="compact" color="light">
+      <ion-row no-padding>
+        <ion-col col-8>
+          <button ion-button icon-only clear color="danger" (click)="changeQty(item, i, -1)">
+            <ion-icon name="remove-circle"></ion-icon>
+          </button>
+          <button ion-button clear color="green">{{item.qty}}</button>
+          <button ion-button icon-only clear color="danger" (click)="changeQty(item, i, +1)">
+            <ion-icon name="add-circle"></ion-icon>
+          </button>
+
+        </ion-col>
+        <ion-col col-4 style="text-align: right;">
+        <button ion-button small outline color="danger" style="width: 64px;" (click)="removeFromCart(item, i)">پاک کردن</button>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-card>
+
+  <ion-grid>
+    <ion-card>
+      <ion-grid>
+        <ion-row>
+        <ion-col col-2> </ion-col>
+        <ion-col col-4><b>جمع کل</b> </ion-col>
+        <ion-col col-2> </ion-col>
+        <ion-col col-4><b> {{total | number}} تومان</b> </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </ion-grid>
+
+</ion-content>
+
+<ion-footer>
+    <ion-toolbar>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <button ion-button color="danger" outline block (click)="closeModal()">بازگشت</button>
+          </ion-col>
+          <ion-col>
+            <button *ngIf="cartItems && cartItems.length>0" ion-button color="danger" block (click)="checkout()">وارسی و پرداخت</button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-toolbar>
+  </ion-footer>

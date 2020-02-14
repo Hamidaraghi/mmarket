@@ -1,0 +1,26 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>ورود به حساب کاربری</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content >
+  <ion-card dir="rtl">
+    <img src="https://mmarket.ir/logo-wide.png" style="background-color:darkmagenta" />
+  </ion-card>
+  <ion-list>
+  <ion-item>
+    <ion-label floating>شماره موبایل</ion-label>
+    <ion-input [(ngModel)]="username" type="text"></ion-input>
+  </ion-item>
+  <ion-item>
+      <ion-label floating>گذرواژه (رمز):</ion-label>
+      <ion-input [(ngModel)]="password" type="password"></ion-input>
+    </ion-item>
+  </ion-list>
+<button ion-button color="danger" round block (click)="login()" >ورود</button>
+<button ion-button round block outline [navPush]="Signup" >ثبت نام</button>
+<button ion-button block clear outline [navPush]="PasswordresetPage" >گذرواژه خود را فراموش کرده اید؟ بازیابی گذرواژه</button>
+</ion-content>

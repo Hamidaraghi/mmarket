@@ -1,0 +1,81 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title center>جزئیات سفارش شماره: {{order.id}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content no-padding dir="rtl">
+  <ion-item-divider color="primary">خلاصه سفارش:</ion-item-divider>
+
+  <ion-item [ngClass]="{'color:danger':1}">
+    <p>
+      <strong> وضعیت سفارش: </strong>
+      <ion-chip *ngIf="status" ng-class="{'green':status == 'تکمیل شده','color: red':employee.tStatus == 'Absent'}">
+        {{ status }}</ion-chip>
+    </p>
+  </ion-item>
+  <ion-item>
+    <p>
+      <strong>تاریخ ایجاد سفارش: </strong>
+      <span *ngIf="order.date_created_gmt">{{ order.date_created | jalali }}</span>
+    </p>
+    <p>
+      <strong>تاریخ ویرایش سفارش: </strong>
+      <span *ngIf="order.date_modified">{{ order.date_modified | jalali }}</span>
+    </p>
+    <p>
+      <strong>تاریخ پرداخت سفارش: </strong>
+      <span *ngIf="order.date_paid">{{ order.date_paid | jalali }}</span>
+    </p>
+    <p>
+      <strong>تاریخ تکمیل سفارش: </strong>
+      <span *ngIf="order.date_completed">{{ order.date_completed | jalali }}</span>
+    </p>
+  </ion-item>
+  <ion-item>
+    <p>
+      <strong>هزینه حمل: </strong>
+      <span *ngIf="order.shipping_total">{{ order.shipping_total | number }} تومان</span>
+    </p>
+    <p color="danger">
+      <strong>تخفیف</strong>
+      <span *ngIf="order.total">{{ order.discount_total | number }} تومان</span>
+    </p>
+    <p color="danger">
+      <strong>مجموع سفارش: </strong>
+      <span *ngIf="order.total">{{ order.total | number }} تومان</span>
+    </p>
+  </ion-item>
+  <ion-item>
+    <p>
+      <strong>روش پرداخت: </strong>
+      <span *ngIf="order.payment_method_title">{{ order.payment_method_title }}</span>
+    </p>
+  </ion-item>
+  <ion-item>
+    <p>
+      <strong>یادداشت شما:</strong>
+      <span *ngIf="order.customer_note">{{ order.customer_note }}</span>
+    </p>
+  </ion-item>
+
+  <div>
+    <ion-item-divider color="primary">آنچه سفارش داده اید:</ion-item-divider>
+    <ion-list>
+      <ion-item *ngFor="let moreproduct of moreProducts; let i=index" text-wrap
+        (click)="openProductPage(moreproduct.product_id)">
+        <ion-thumbnail item-left>
+          <img *ngIf="images[i]" [src]="images[i]" />
+          <ion-spinner *ngIf="!images[i]" name="dots"></ion-spinner>
+        </ion-thumbnail>
+        <h2>{{moreproduct.name}}</h2>
+        <p>{{moreproduct.quantity}} * {{moreproduct.price | number}} =
+          {{moreproduct.quantity * moreproduct.price | number}} تومان </p>
+        <button ion-button item-right icon clear>
+          <ion-icon name="arrow-forward"></ion-icon>
+        </button>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>

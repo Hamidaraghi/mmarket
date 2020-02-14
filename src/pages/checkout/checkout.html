@@ -1,0 +1,221 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>وارسی و پرداخت</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content dir='rtl'>
+  <div [formGroup]="checkoutValidator">
+    <ion-list>
+      <ion-item-divider color="danger">مشخصات دریافت کننده صورتحساب</ion-item-divider>
+      <ion-item>
+        <ion-label>نام *</ion-label>
+        <ion-input formControlName="firstName" type="text" [(ngModel)]="newOrder.billing.first_name"
+          [class.invalid]="!checkoutValidator.controls.firstName.valid && (checkoutValidator.controls.firstName.dirty || submitAttempt)">
+        </ion-input>
+      </ion-item>
+      <ion-item
+        *ngIf="!checkoutValidator.controls.firstName.valid  && (checkoutValidator.controls.firstName.dirty || submitAttempt)">
+        <p style="color:red">لطفا یک نام معتبر وارد نمایید.</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>نام خانوادگی *</ion-label>
+        <ion-input formControlName="lastName" type="text" [(ngModel)]="newOrder.billing.last_name"
+          [class.invalid]="!checkoutValidator.controls.lastName.valid && (checkoutValidator.controls.lastName.dirty || submitAttempt)">
+        </ion-input>
+      </ion-item>
+      <ion-item
+        *ngIf="!checkoutValidator.controls.lastName.valid  && (checkoutValidator.controls.lastName.dirty || submitAttempt)">
+        <p style="color:red">لطفا یک نام خانوادگی معتبر وارد نمایید.</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>ایمیل صورتحساب (اختیاری)</ion-label>
+        <ion-input formControlName="email" type="email" [(ngModel)]="newOrder.billing.email"
+          [class.invalid]="!checkoutValidator.controls.email.valid && (checkoutValidator.controls.email.dirty || submitAttempt)">
+        </ion-input>
+      </ion-item>
+      <ion-item
+        *ngIf="!checkoutValidator.controls.email.valid  && (checkoutValidator.controls.email.dirty || submitAttempt)">
+        <p style="color:red">لطفا یک ایمیل معتبر وارد نمایید.</p>
+      </ion-item>
+
+      <ion-item-divider color="danger"> آدرس ارسال صورتحساب سفارش</ion-item-divider>
+      <ion-item>
+        <ion-label>شهر/منطقه *</ion-label>
+        <ion-select formControlName="cityState"
+          [class.invalid]="!checkoutValidator.controls.cityState.valid && (checkoutValidator.controls.cityState.dirty || submitAttempt)"
+          (ionChange)="onCityStateChange($event)" interface="action-sheet" cancelText="لغو">
+          <ion-option *ngFor="let city of cityStates" value={{city.id}}>{{city.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item
+        *ngIf="!checkoutValidator.controls.cityState.valid  && (checkoutValidator.controls.cityState.dirty || submitAttempt)">
+        <p style="color:red">لطفا یک شهر/منطقه انتخاب نمایید.</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>شرکت/سازمان</ion-label>
+        <ion-input [(ngModel)]="newOrder.billing.company" type="text" [ngModelOptions]="{standalone: true}"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>آدرس *</ion-label>
+        <ion-textarea [(ngModel)]="newOrder.billing.address_1" type="text" formControlName="address"
+          [class.invalid]="!checkoutValidator.controls.address.valid && (checkoutValidator.controls.address.dirty || submitAttempt)">
+        </ion-textarea>
+      </ion-item>
+      <ion-item
+        *ngIf="!checkoutValidator.controls.address.valid  && (checkoutValidator.controls.address.dirty || submitAttempt)">
+        <p style="color:red">طول آدرس نباید کمتر از 10 نویسه و بیشتر از 100 نویسه باشد.</p>
+      </ion-item>
+      <ion-item hidden>
+        <ion-label>آدرس 2</ion-label>
+        <ion-textarea [(ngModel)]="newOrder.billing.address_2" type="text" max-length="80"
+          [ngModelOptions]="{standalone: true}"></ion-textarea>
+      </ion-item>
+      <ion-item hidden>
+        <ion-label>کشور</ion-label>
+        <ion-select [(ngModel)]="newOrder.billing.country" [ngModelOptions]="{standalone: true}">
+          <ion-option value="IR" selected="true">ایران</ion-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item hidden>
+        <ion-label>شهر</ion-label>
+        <ion-input [(ngModel)]="newOrder.billing.city" type="text" [ngModelOptions]="{standalone: true}"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>کد پستی یا پلاک *</ion-label>
+        <ion-input formControlName="postCode" [(ngModel)]="newOrder.billing.postcode" type="number" clearInput
+          [class.invalid]="!checkoutValidator.controls.postCode.valid && (checkoutValidator.controls.postCode.dirty || submitAttempt)">
+        </ion-input>
+      </ion-item>
+      <ion-item
+        *ngIf="!checkoutValidator.controls.postCode.valid  && (checkoutValidator.controls.postCode.dirty || submitAttempt)">
+        <p style="color:red">لطفا یک کد پستی یا پلاک معتبر وارد نمایید. حداکثر 10 رقم</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>تلفن یا موبایل *</ion-label>
+        <ion-input formControlName="phone" [(ngModel)]="newOrder.billing.phone" type="tel" clearInput
+          [class.invalid]="!checkoutValidator.controls.phone.valid && (checkoutValidator.controls.phone.dirty || submitAttempt)">
+        </ion-input>
+      </ion-item>
+      <ion-item
+        *ngIf="!checkoutValidator.controls.phone.valid  && (checkoutValidator.controls.phone.dirty || submitAttempt)">
+        <p style="color:red">یک شماره تماس معتبر حداکثر تا 11 رقم وارد نمایید. </p>
+      </ion-item>
+      <ion-item>
+        <ion-label>سفارش، به آدرس فوق ارسال شود</ion-label>
+        <ion-checkbox checked="true" (ionChange)="setBillingToShipping()"></ion-checkbox>
+      </ion-item>
+      <ion-item>
+        <ion-label>یادداشت شما: </ion-label>
+        <ion-textarea placeholder="در اینجا می توانید یک یادداشت بگذارید" [(ngModel)]="data.customer_note" type="text"
+          [ngModelOptions]="{standalone:true}">
+        </ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label>قوانین و مقررات را می پذیرم</ion-label>
+        <ion-checkbox checked='false' formControlName="rules"
+          [class.invalid]="!checkoutValidator.controls.rules.valid && (checkoutValidator.controls.rules.dirty || submitAttempt)">
+        </ion-checkbox>
+      </ion-item>
+      <ion-item
+        *ngIf="!checkoutValidator.controls.rules.valid  && (checkoutValidator.controls.rules.dirty || submitAttempt)">
+        <p style="color:red">شما برای ادامه می بایست قوانین را بپذیرید! </p>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <ion-list *ngIf="!billing_shipping_same">
+    <ion-item-divider color="danger">آدرس ارسال کالای سفارش</ion-item-divider>
+
+    <ion-item>
+      <ion-label>شرکت</ion-label>
+      <ion-input [(ngModel)]="newOrder.shipping.company" type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>آدرس 1</ion-label>
+      <ion-textarea [(ngModel)]="newOrder.shipping.address_1" type="text" max-length="80"></ion-textarea>
+    </ion-item>
+    <ion-item>
+      <ion-label>آدرس 2</ion-label>
+      <ion-textarea [(ngModel)]="newOrder.shipping.address_2" type="text" max-length="80"></ion-textarea>
+    </ion-item>
+    <ion-item hidden>
+      <ion-label>کشور</ion-label>
+      <ion-select [(ngModel)]="newOrder.shipping.country">
+        <ion-option value="Iran" selected="true">ایران</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>شهرستان - منطقه</ion-label>
+      <ion-select [(ngModel)]="newOrder.shipping.state">
+        <ion-option *ngFor="let city of cityStates" value="city.name"> {{city.name}}</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>شهر</ion-label>
+      <ion-input [(ngModel)]="newOrder.shipping.city" type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>کد پستی یا پلاک</ion-label>
+      <ion-input [(ngModel)]="newOrder.shipping.postcode" type="number" clearInput></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>تلفن</ion-label>
+      <ion-input [(ngModel)]="newOrder.shipping.phone" type="tel" clearInput></ion-input>
+    </ion-item>
+  </ion-list>
+  <ion-item-divider color="danger">(ابتدا شهر/منطقه را انتخاب نمایید) شیوه های حمل </ion-item-divider>
+  <div [formGroup]="checkoutValidator">
+    <ion-item>
+      <ion-label>
+        <span>* شیوه حمل</span><span *ngIf="!checkoutValidator.controls.cityState.valid" style="color:red">(ابتدا یک
+          شهر/منطقه انتخاب کنید)</span>
+      </ion-label>
+      <ion-select formControlName="shippingMethod" [selectOptions]="selectOptions" class="rtl" interface="action-sheet"
+        cancelText="لغو" (ionChange)="onShippingChange($event)"
+        [class.invalid]="!checkoutValidator.controls.shippingMethod.valid && (checkoutValidator.controls.shippingMethod.dirty || submitAttempt)">
+        <ng-container *ngFor="let ship of shippingMethods">
+          <ion-option *ngIf="ship.enabled" [value]=ship>{{ship.title}} - {{ship.shippingAmount | number}} تومان
+          </ion-option>
+        </ng-container>
+
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="!checkoutValidator.controls.cityState.valid &&  submitAttempt">
+      <p style="color:red">لطفا ابتدا یک شهر/منطقه انتخاب نمایید</p>
+    </ion-item>
+    <ion-item
+      *ngIf="!checkoutValidator.controls.shippingMethod.valid  && (submitAttempt || checkoutValidator.controls.shippingMethod.click)">
+      <p style="color:red">لطفا یک شیوه حمل انتخاب نمایید!</p>
+    </ion-item>
+    <ion-item-divider color="danger">شیوه پرداخت</ion-item-divider>
+    <ion-item>
+      <ion-label>* شیوه پرداخت</ion-label>
+      <ion-select formControlName="paymentMethod" [selectOptions]="selectOptions" [(ngModel)]="paymentMethod"
+        class="rtl" interface="action-sheet" cancelText="لغو"
+        [class.invalid]="!checkoutValidator.controls.paymentMethod.valid && (checkoutValidator.controls.paymentMethod.dirty || submitAttempt)">
+        <ion-option *ngFor="let p of paymentMethods" value={{p.id}}>{{p.title}}</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="!checkoutValidator.controls.paymentMethod.valid &&  submitAttempt">
+      <p style="color:red">لطفا یک روش پرداخت انتخاب نمایید</p>
+    </ion-item>
+    <ion-item>
+      <ion-input type="text" [(ngModel)]="couponCode" [ngModelOptions]="{standalone: true}" item-start></ion-input>
+      <button ion-item (click)="insertCoupon(orderData.id, couponCode)" item-end>افزودن کد تخفیف</button>
+    </ion-item>
+    <ion-item>
+      <p *ngFor="let coupon of couponLines">
+        <span>کد کوپن: {{coupon.code}}</span>
+        <span>تخفیف: {{coupon.discount}}</span>
+      </p>
+    </ion-item>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <button ion-button block round color="danger" (click)="placeOrder(orderData, true, false)">ثبت سفارش - مجموع
+    {{cartTotal+shippingAmount | number:0}} تومان</button>
+</ion-footer>
