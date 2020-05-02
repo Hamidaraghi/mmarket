@@ -1,0 +1,91 @@
+<!--
+  Generated template for the OrderSummaryPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <ion-title>خلاصه سفارش</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content >
+ 
+
+
+    <ion-list class = "order_list">
+      <ion-item *ngFor="let product of products; let i=index" text-wrap
+        (click)="openProductPage(product.product_id)">
+        <h2>{{product.name}}</h2>
+        <p>{{product.quantity}} * {{product.price | number}} =
+          {{product.quantity * product.price | number}} تومان </p>
+      </ion-item>
+    </ion-list>
+    
+<ion-list>
+
+  <ion-item >
+    <p>
+      <strong>هزینه حمل: </strong>
+      <span *ngIf="order.shipping_total">{{ order.shipping_total | number }} تومان</span>
+    </p>
+    <p color="danger">
+      <strong>سایر تخفیف ها: </strong>
+      <span *ngIf="order.total">{{ order.discount_total | number }} تومان </span>
+    </p>
+    <p color="danger">
+      <strong>مجموع سفارش: </strong>
+      <span *ngIf="order.total">{{ order.total | number }} تومان</span>
+    </p>
+  </ion-item>
+</ion-list>
+
+ <ion-list class="order_list">
+  <ion-item *ngFor="let coupon of order.coupon_lines; let i=index" >
+    <p>
+      <span>کد کوپن: {{coupon.code}}</span><br>
+      <span>تخفیف: {{coupon.discount | number}} تومان</span>
+    </p>
+    <button ion-button  clear color="danger" item-end (click)="removeCoupon(i)">
+      <ion-icon name="remove-circle" item-end></ion-icon>
+    </button>
+  </ion-item>
+
+  <ion-item>
+    <button ion-item (click)="addOff()">کد تخفیف دارید؟</button>
+  </ion-item>
+</ion-list>
+
+<ion-list [formGroup]="checkoutValidator">
+ 
+  <ion-item-divider color="danger">شیوه پرداخت</ion-item-divider>
+  <ion-item>
+    <ion-label>* شیوه پرداخت</ion-label>
+    <ion-spinner ></ion-spinner>
+    <ion-select *ngIf="paymentMethods.length > 0" formControlName="paymentMethod" [selectOptions]="selectOptions" [(ngModel)]="paymentMethod"
+      class="rtl" interface="action-sheet" cancelText="لغو"
+      [class.invalid]="!checkoutValidator.controls.paymentMethod.valid && (checkoutValidator.controls.paymentMethod.dirty || submitAttempt)">
+      <ion-option *ngFor="let p of paymentMethods" value={{p.id}}>{{p.title}}</ion-option>
+    </ion-select>
+  </ion-item>
+  <ion-item *ngIf="!checkoutValidator.controls.paymentMethod.valid &&  submitAttempt">
+    <p style="color:red">لطفا یک روش پرداخت انتخاب نمایید</p>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>* قوانین و مقررات را می پذیرم</ion-label>
+    <ion-checkbox checked='false' formControlName="rules"
+      [class.invalid]="!checkoutValidator.controls.rules.valid && (checkoutValidator.controls.rules.dirty || submitAttempt)">
+    </ion-checkbox>
+  </ion-item>  
+  <ion-item
+    *ngIf="!checkoutValidator.controls.rules.valid  && (checkoutValidator.controls.rules.dirty || submitAttempt)">
+    <p style="color:red">شما برای ادامه می بایست قوانین را بپذیرید! </p>
+  </ion-item>
+</ion-list>
+
+<ion-footer>
+  <button ion-button block round color="danger" (click)="placeOrder(order)" >تکمیل سفارش و پرداخت</button>
+</ion-footer>
+</ion-content>

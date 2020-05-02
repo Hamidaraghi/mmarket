@@ -1,0 +1,276 @@
+<ion-header dir="rtl">
+  <ion-navbar mode="ios">
+
+    <button ion-button start menu-toggle="right" menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title style="text-align: center"  > <img no-padding src='https://mmarket.ir/MMarket-app-header.png' cache="true" /> </ion-title>
+
+    <ion-searchbar *ngIf="isSearchbarOpened" [(ngModel)]="searchQuery" (search)="onSearch($event)" placeholder="جستجو"
+      showCancelButton="true" [animated]="true" (ionCancel)="isSearchbarOpened = false"></ion-searchbar>
+
+    <ion-buttons padding-left end *ngIf="!isSearchbarOpened">
+      <button ion-button icon-only (click)="isSearchbarOpened = true">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-buttons padding-left end>
+      <button ion-button icon-only large [navPush]="cartPage">
+        <ion-icon style="padding-left: 17px;" name="cart" large color="danger" *ngIf="!cart || !cart.length " ></ion-icon>
+        <ion-icon style="padding-left: 17px;" name="cart" large color="danger" id="cart-btn" *ngIf="cart && cart.length " ></ion-icon>
+        <ion-badge id="cart-badge" *ngIf="cart && cart.length  " >{{cart.length}}</ion-badge>
+      </button>
+    </ion-buttons>
+
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="برای تازه سازی بکشید" refreshingSpinner="ios"></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-card text-center>
+    <ion-spinner *ngIf="!slides" name="ios"></ion-spinner>
+    <!-- Slider -->
+    <ion-slides loop="true" autoplay="2500" pager="true" dir="rtl" *ngIf="slides && slides.length>0" >
+      <ion-slide  *ngFor="let slide of slides" tappable (click)="openLink(slide.url)">
+    
+          <img [src]="slide.slider_images"  class="h-img" cache="true"/>
+      
+      </ion-slide>
+    </ion-slides>
+    
+  </ion-card>
+  
+    <div style="margin-top: 7px" *ngIf="featuredProducts && featuredProducts.length>0">
+      <div>
+        <ion-chip>
+          <ion-label color="danger">
+            * محصولات ویژه
+          </ion-label>
+        </ion-chip>
+        <ion-chip >
+          <ion-label color="green" [navPush]="QueryResult" [navParams]="{query: 'products?featured=true&status=publish', pageTitle: 'محصولات ویژه'}">
+            دیدن همه
+          </ion-label>
+        </ion-chip>
+      </div>
+      <ion-spinner *ngIf="!featuredProducts || featuredProducts.length < 1" name="ios"></ion-spinner>
+  
+      <ion-scroll scrollX="true" direction="x">
+      <ion-col no-padding *ngFor="let featuredproduct of featuredProducts">
+        <ion-card  class="scroll-ion-card"   [navPush]="ProductDetails"
+          [navParams]="{product: featuredproduct}">
+            <img *ngIf="featuredproduct.images" [src]="featuredproduct.images[0].src" cache="true" />
+            <img *ngIf="!featuredproduct.images" src="assets/imgs/no-image.png" />
+            <div style="padding-right:3px">
+              <div *ngIf="featuredproduct.sale_price && featuredproduct.type!='variable' && featuredproduct.type!='grouped'">
+                <span dir="ltr" color="danger">{{(featuredproduct.sale_price/featuredproduct.regular_price*100)-100|number}}%</span>
+              </div>
+              <p text-wrap >
+                <b dark font-100 [innerHTML]="featuredproduct.price_html"></b>
+                <br>
+  
+                <span style="font-size: 11px" *ngIf="featuredproduct.name.length > 38 " [innerHTML]="featuredproduct.name.substr(0,38) + '...'"></span>
+                <span style="font-size: 11px" *ngIf="featuredproduct.name.length <= 38 " [innerHTML]="featuredproduct.name"></span>
+  
+              </p>
+            </div>
+          </ion-card>
+        </ion-col>
+      </ion-scroll>
+      
+    </div>
+  
+
+
+  <!-- محصولات حراجی -->
+  <div *ngIf="saleProducts && saleProducts.length > 0">
+    <div style="margin-top: 7px;">
+      <ion-chip style="margin-right:5px">
+        <ion-label color="danger">
+          محصولات حــراجی !
+        </ion-label>
+      </ion-chip>
+      <ion-chip style="margin-left:5px; background-color:lightblue">
+        <ion-label color="green" [navPush]="QueryResult" [navParams]="{query: 'products?on_sale=true&in_stock=true&status=publish', pageTitle: 'حراجـــی !'}">
+          دیدن همه
+        </ion-label>
+      </ion-chip>
+    </div>
+    <ion-spinner *ngIf="!saleProducts || saleProducts.length < 1" name="ios"></ion-spinner>
+    <div>
+      <ion-scroll scrollX="true" relative >
+        <ion-col no-padding *ngFor="let saleproduct of saleProducts">
+            <ion-card class="scroll-ion-card"  [navPush]="ProductDetails"
+            [navParams]="{product: saleproduct}">
+              <img *ngIf="saleproduct.images" [src]="saleproduct.images[0].src" cache="true" />
+              <img *ngIf="!saleproduct.images" src="assets/imgs/no-image.png" />
+              <div style="padding-right: 10px" *ngIf="saleproduct.sale_price && saleproduct.type!='variable' && saleproduct.type!='grouped'">
+                <span dir="ltr" style="color: brown;">{{(saleproduct.sale_price/saleproduct.regular_price*100)-100|number}}%</span>
+              </div>
+              <div style="padding-right:5px; padding-left: 2px; height: 26vw;">
+                <p text-wrap>
+                  <b dark [innerHTML]="saleproduct.price_html"></b>
+                </p>
+                <p text-wrap>
+                  <span *ngIf="saleproduct.name.length > 35 " [innerHTML]="saleproduct.name.substr(0,35) + '...'"></span>
+                  <span *ngIf="saleproduct.name.length <= 35 " [innerHTML]="saleproduct.name"></span>
+                </p>
+              </div>
+            </ion-card>
+          </ion-col>
+      </ion-scroll>
+    </div>
+  </div>
+
+
+<!-- محصولات پرفروش -->
+<div *ngIf="topPeriodSaleProducts && topPeriodSaleProducts.length > 0">
+  <div style="margin-top: 7px;">
+    <ion-chip style="margin-right:5px">
+      <ion-label color="danger">
+        پرفروش ترین محصولات این ماه !
+      </ion-label>
+    </ion-chip>
+<!--     <ion-chip style="margin-left:5px; background-color:lightblue">
+      <ion-label color="green" [navPush]="QueryResult" [navParams]="{query: 'products?on_sale=true&in_stock=true', pageTitle: 'حراجـــی !'}">
+        دیدن همه
+      </ion-label>
+    </ion-chip> -->
+  </div>
+  <div>
+
+    <ion-scroll scrollX="true" relative >
+
+      <ion-col no-padding *ngFor="let saleproduct of topPeriodSaleProducts" async>
+          <ion-card class="scroll-ion-card"  [navPush]="ProductDetails"
+          [navParams]="{product: saleproduct}">
+            <img *ngIf="saleproduct.images" [src]="saleproduct.images[0].src" cache="true" />
+            <img *ngIf="!saleproduct.images" src="assets/imgs/no-image.png" />
+            <div style="padding-right: 10px" *ngIf="saleproduct.sale_price && saleproduct.type!='variable' && saleproduct.type!='grouped'">
+              <span dir="ltr" style="color: brown;">{{(saleproduct.sale_price/saleproduct.regular_price*100)-100|number}}%</span>
+            </div>
+            <div style="padding-right:5px; padding-left: 2px; height: 26vw;">
+              <p text-wrap>
+                <b dark [innerHTML]="saleproduct.price_html"></b>
+              </p>
+              <p text-wrap>
+                <span *ngIf="saleproduct.name.length > 35 " [innerHTML]="saleproduct.name.substr(0,35) + '...'"></span>
+                <span *ngIf="saleproduct.name.length <= 35 " [innerHTML]="saleproduct.name"></span>
+              </p>
+            </div>
+          </ion-card>
+        </ion-col>
+    </ion-scroll>
+  </div>
+</div>
+
+
+<!-- محصولات حدید -->
+<ion-spinner *ngIf="!moreProducts || moreProducts.length < 1" name="ios"></ion-spinner>
+<div *ngIf="moreProducts && moreProducts.length > 0">
+  <div style="margin-top: 7px;">
+    <ion-chip style="margin-right:5px">
+      <ion-label color="danger">
+        تازه ترین محصولات
+      </ion-label>
+    </ion-chip>
+    <ion-chip style="margin-left:5px; background-color:lightblue">
+      <ion-label color="green" [navPush]="QueryResult" [navParams]="{query: 'products?&status=publish', pageTitle: 'تازه ترین محصولات'}">
+        دیدن همه
+      </ion-label>
+    </ion-chip>
+  </div>
+  <div>
+
+    <ion-scroll scrollX="true" relative >
+
+      <ion-col no-padding *ngFor="let latestproduct of moreProducts">
+          <ion-card class="scroll-ion-card"  [navPush]="ProductDetails"
+          [navParams]="{product: latestproduct}">
+            <img *ngIf="latestproduct.images" [src]="latestproduct.images[0].src" cache="true" />
+            <img *ngIf="!latestproduct.images" src="assets/imgs/no-image.png" />
+            <div style="padding-right: 10px" *ngIf="latestproduct.sale_price && latestproduct.type!='variable' && latestproduct.type!='grouped'">
+              <span dir="ltr" style="color: brown;">{{(latestproduct.sale_price/latestproduct.regular_price*100)-100|number}}%</span>
+            </div>
+            <div style="padding-right:5px; padding-left: 2px; height: 26vw;">
+              <p text-wrap>
+                <b dark [innerHTML]="latestproduct.price_html"></b>
+              </p>
+              <p text-wrap>
+                <span *ngIf="latestproduct.name.length > 35 " [innerHTML]="latestproduct.name.substr(0,35) + '...'"></span>
+                <span *ngIf="latestproduct.name.length <= 35 " [innerHTML]="latestproduct.name"></span>
+              </p>
+            </div>
+          </ion-card>
+        </ion-col>
+    </ion-scroll>
+  </div>
+</div>
+
+
+<!-- Categories -->
+<div  text-uppercase dark (swipe)="onSwipeContent($event)"><b>   دسته بندی ها: </b></div>
+
+<ion-spinner *ngIf="!categories" name="ios" margin-auto></ion-spinner>
+
+<ion-scroll  *ngIf="categories && 0<categories.length" scrollX="true" style="min-height:110px;">
+  
+  <div class="scroll-ion-card-cat" *ngFor="let cat of categories" >
+
+    <ion-card class="cat-ion-card" [navPush]="ProductsByCategory" [navParams]="{'id': cat.id}" >
+      
+      
+      <img class="cat-img-ion-card" *ngIf="cat.image && cat.image.src" [src]="cat.image.src" cache="true" />
+      <img class="cat-img-ion-card" *ngIf="!cat.image || !cat.image.src" src="assets/imgs/no-image.png" />
+      
+
+      <div text-wrap class="cat-card-title" >{{cat.name}}</div>
+      
+    </ion-card>
+</div>
+  
+</ion-scroll>
+<div text-center *ngIf="categories && categories.length<1" class="no-data">هیچ دسته بندی یافت نشد</div>
+
+
+
+
+  <!-- امور کاربری -->
+  <ion-fab bottom left #fab>
+    <button ion-fab color="danger" mini>
+      <ion-icon name="arrow-dropup"></ion-icon>
+    </button>
+    <ion-fab-list side="top">
+        <button (click)="platform.exitApp();" (click)="fab.close()" ion-fab>
+            <ion-icon name="log-out" color="danger" ></ion-icon>
+            <ion-label>خروج</ion-label>
+          </button>
+      <button *ngIf="!loggedIn" [navPush]="Signup" (click)="fab.close()" ion-fab>
+        <ion-icon name="md-clipboard" color="azure"></ion-icon>
+        <ion-label>ثبت نام</ion-label>
+      </button>
+      <button *ngIf="!loggedIn" [navPush]="Login" (click)="fab.close()" ion-fab>
+        <ion-icon name="log-in" color="navy" ></ion-icon>
+        <ion-label>ورود به حساب کاربری</ion-label>
+      </button>
+
+      <button [navPush]="cartPage" (click)="fab.close()" *ngIf="loggedIn" ion-fab>
+        <ion-icon name="cart" color="success"></ion-icon>
+        <ion-label>سبد خرید</ion-label>
+      </button>
+      <button [navPush]="MyordersPage" *ngIf="loggedIn" [navParams]="{'userId': user.id}" (click)="fab.close()" ion-fab>
+        <ion-icon name="logo-buffer" color="azure" ></ion-icon>
+        <ion-label>سفارشات من</ion-label>
+      </button>
+    </ion-fab-list>
+    <ion-fab-list side="right">
+
+    </ion-fab-list>
+  </ion-fab>
+
+</ion-content>

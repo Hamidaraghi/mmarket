@@ -1,0 +1,60 @@
+{
+  "_from": "cordova-plugin-colored-browser-tabs",
+  "_id": "cordova-plugin-colored-browser-tabs@1.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-a4XZDN21AJxkOcB5jYRf70Fl/6YjFQ7h7j/2HptGxbm3IQlujZ+4j1Pc9/QHEDN7/8oFXEOmRicorEZDOM23nA==",
+  "_location": "/cordova-plugin-colored-browser-tabs",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "cordova-plugin-colored-browser-tabs",
+    "name": "cordova-plugin-colored-browser-tabs",
+    "escapedName": "cordova-plugin-colored-browser-tabs",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-colored-browser-tabs/-/cordova-plugin-colored-browser-tabs-1.0.0.tgz",
+  "_shasum": "7bc2c272b635a5572586605caa7b08c7de02bf32",
+  "_spec": "cordova-plugin-colored-browser-tabs",
+  "_where": "D:\\test-mmarket",
+  "author": {
+    "name": "Tobias Ebert"
+  },
+  "bugs": {
+    "url": "https://github.com/TobyEb/cordova-plugin-colored-browser-tabs/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "cordova-plugin-colored-browser-tabs",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "deprecated": false,
+  "description": "Cordova Plugin to open Chrome Custom Tabs on Android or Safaris SFSafariViewController on iOS",
+  "homepage": "https://github.com/TobyEb/cordova-plugin-colored-browser-tabs#readme",
+  "keywords": [
+    "android",
+    "ios",
+    "chrome custom tabs",
+    "ChromeCustomTabs",
+    "safariviewcontroller",
+    "SFSafariViewController",
+    "browser tabs",
+    "in app browser"
+  ],
+  "license": "MIT License",
+  "name": "cordova-plugin-colored-browser-tabs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TobyEb/cordova-plugin-colored-browser-tabs.git"
+  },
+  "version": "1.0.0"
+}

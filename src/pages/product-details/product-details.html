@@ -1,0 +1,285 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{product.name}}</ion-title>
+  </ion-navbar>
+  
+</ion-header>
+
+<ion-content dir="rtl" style="display:contents" >
+    <ion-fab edge left top  (click)="openCart()" >
+        <button ion-fab color="danger">
+          <ion-icon name="cart" ></ion-icon>
+        </button>
+      </ion-fab>
+  <ion-card>
+    <ion-spinner *ngIf="!product.images" name="ios" ></ion-spinner>
+    <ion-slides autoplay="2500" pager dir="rtl" *ngIf="product.images && product.images.length">
+      <ion-slide *ngFor="let image of product.images">
+        <img [src]="image.src" #myImage (click)="presentImage(myImage)" />
+      </ion-slide>
+    </ion-slides>
+    <div padding>
+      <span>
+        <ion-icon small name="star" [color]="(product.average_rating>=1)?'golden':'gray'"></ion-icon>
+      </span>
+      <span>
+        <ion-icon small name="star" [color]="(product.average_rating>=2)?'golden':'gray'"></ion-icon>
+      </span>
+      <span>
+        <ion-icon small name="star" [color]="(product.average_rating>=3)?'golden':'gray'"></ion-icon>
+      </span>
+      <span>
+        <ion-icon small name="star" [color]="(product.average_rating>=4)?'golden':'gray'"></ion-icon>
+      </span>
+      <span>
+        <ion-icon small name="star" [color]="(product.average_rating>=5)?'golden':'gray'"></ion-icon>
+      </span>
+
+      <p>
+        <span>امتیاز: {{product.average_rating}} از 5 (از مجموع {{product.rating_count}} رای)</span>
+      </p>
+    </div>
+    <ion-card-content>
+      <ion-card-title>
+        {{product.name}} &nbsp;
+        <ion-chip *ngFor="let cat of product.categories" style="margin-left:5px">
+          <ion-label color="danger">
+            {{cat.name}}
+          </ion-label>
+        </ion-chip>
+      </ion-card-title>
+      <p [innerHTML]="product.description"></p>
+      <br>
+    </ion-card-content>
+  </ion-card>
+
+  <!--Quantom and price -->
+  <ion-grid *ngIf="product.price && product.in_stock" no-padding>
+    <ion-card style="align-self: center;" no-padding>
+      <ion-item style="text-align: center;">
+        <b>
+          <span>قیمت واحد: </span>
+          <span [innerHTML]="product.price_html"></span>
+        </b>
+      </ion-item>
+    </ion-card>
+  </ion-grid>
+
+  <ion-card *ngIf="product.attributes && product.attributes.length > 0">
+    <ion-card-content>
+      <ion-card-title>
+        ویژگی ها
+      </ion-card-title>
+      <ion-grid>
+        <ion-row *ngFor="let att of product.attributes">
+          <ion-col col-4> {{att.name}} </ion-col>
+          <ion-col col-8>
+            <span *ngFor="let option of att.options"> {{option}}، </span>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+
+
+
+
+
+
+
+
+  <!-- محصولات پیشنهادی ام مارکت -->
+<ion-spinner *ngIf="isRefreshing && (!usPesllProducts || usPesllProducts.length < 1)" name="ios"></ion-spinner>
+<div *ngIf="usPesllProducts && usPesllProducts.length > 0">
+  <div style="margin-top: 7px;">
+    <ion-chip style="margin-right:5px">
+      <ion-label color="danger">
+        پیشنهاد ام مارکت:
+      </ion-label>
+    </ion-chip>
+
+  </div>
+  <div>
+
+    <ion-scroll scrollX="true" relative >
+
+      <ion-col no-padding *ngFor="let saleproduct of usPesllProducts">
+          <ion-card class="scroll-ion-card"  [navPush]="ProductDetails"
+          [navParams]="{product: saleproduct}">
+            <img *ngIf="saleproduct.images" [src]="saleproduct.images[0].src" />
+            <img *ngIf="!saleproduct.images" src="assets/imgs/no-image.png" />
+            <div style="padding-right: 10px" *ngIf="saleproduct.sale_price && saleproduct.type!='variable' && saleproduct.type!='grouped'">
+              <span dir="ltr" style="color: brown;">{{(saleproduct.sale_price/saleproduct.regular_price*100)-100|number}}%</span>
+            </div>
+            <div style="padding-right:5px; padding-left: 2px; height: 26vw;">
+              <p text-wrap>
+                <b dark [innerHTML]="saleproduct.price_html"></b>
+              </p>
+              <p text-wrap>
+                <span *ngIf="saleproduct.name.length > 35 " [innerHTML]="saleproduct.name.substr(0,35) + '...'"></span>
+                <span *ngIf="saleproduct.name.length <= 35 " [innerHTML]="saleproduct.name"></span>
+              </p>
+            </div>
+          </ion-card>
+        </ion-col>
+    </ion-scroll>
+  </div>
+</div>
+
+
+
+
+
+
+<!-- محصولات مرتبط -->
+<ion-spinner *ngIf="isRefreshing && (!crossSellProducts || crossSellProducts.length < 1)" name="ios"></ion-spinner>
+<div *ngIf="crossSellProducts && crossSellProducts.length > 0">
+  <div style="margin-top: 7px;">
+    <ion-chip style="margin-right:5px">
+      <ion-label color="danger">
+       محصولات مرتبط:
+      </ion-label>
+    </ion-chip>
+  </div>
+  <div>
+
+    <ion-scroll scrollX="true" relative >
+
+      <ion-col no-padding *ngFor="let saleproduct of crossSellProducts">
+          <ion-card class="scroll-ion-card"  [navPush]="ProductDetails"
+          [navParams]="{product: saleproduct}">
+            <img *ngIf="saleproduct.images" [src]="saleproduct.images[0].src" />
+            <img *ngIf="!saleproduct.images" src="assets/imgs/no-image.png" />
+            <div style="padding-right: 10px" *ngIf="saleproduct.sale_price && saleproduct.type!='variable' && saleproduct.type!='grouped'">
+              <span dir="ltr" style="color: brown;">{{(saleproduct.sale_price/saleproduct.regular_price*100)-100|number}}%</span>
+            </div>
+            <div style="padding-right:5px; padding-left: 2px; height: 26vw;">
+              <p text-wrap>
+                <b dark [innerHTML]="saleproduct.price_html"></b>
+              </p>
+              <p text-wrap>
+                <span *ngIf="saleproduct.name.length > 35 " [innerHTML]="saleproduct.name.substr(0,35) + '...'"></span>
+                <span *ngIf="saleproduct.name.length <= 35 " [innerHTML]="saleproduct.name"></span>
+              </p>
+            </div>
+          </ion-card>
+        </ion-col>
+    </ion-scroll>
+  </div>
+</div>
+
+
+
+
+
+
+  <ion-card>
+    <ion-card-content>
+      <ion-card-title>
+        دیدگاه کاربران:
+      </ion-card-title>
+      <ion-spinner *ngIf="isRefreshing" name="ios"></ion-spinner>
+      <h3 *ngIf="!isRefreshing && (!reviews || reviews.length < 1)" >تا کنون هیچ دیدگاهی برای این محصول ثبت نشده است</h3>
+      <ion-grid *ngIf="reviews !=null">
+        <ion-row *ngFor="let review of reviews">
+          <div *ngIf="product.reviews_allowed">
+            <ion-col col-4>
+              <b>{{review.name}}</b>
+              <br>
+              <span>
+                <ion-icon small name="star" [color]="(review.rating>=1)?'golden':'gray'"></ion-icon>
+              </span>
+              <span>
+                <ion-icon small name="star" [color]="(review.rating>=2)?'golden':'gray'"></ion-icon>
+              </span>
+              <span>
+                <ion-icon small name="star" [color]="(review.rating>=3)?'golden':'gray'"></ion-icon>
+              </span>
+              <span>
+                <ion-icon small name="star" [color]="(review.rating>=4)?'golden':'gray'"></ion-icon>
+              </span>
+              <span>
+                <ion-icon small name="star" [color]="(review.rating>=5)?'golden':'gray'"></ion-icon>
+              </span>
+            </ion-col>
+            <ion-col col-8>
+              <p>
+                {{review.review}}
+              </p>
+
+            </ion-col>
+          </div>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+
+  </ion-card>
+
+  <ion-item-divider color="secondary">دیدگاه شما درباره این محصول:</ion-item-divider>
+  <div [formGroup]="reviewValidator">
+    <ion-list>
+      <ion-item>
+        <ion-label>* نام: </ion-label>
+        <ion-input [(ngModel)]="user.displayname" formControlName="name" type="text" [class.invalid]="!reviewValidator.controls.name.valid && (reviewValidator.controls.name.dirty || submitAttempt)"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!reviewValidator.controls.name.valid  && (submitAttempt || reviewValidator.controls.name.dirty)">
+        <p style="color:red">لطفا یک نام معتبر وارد نمایید. فقط شامل حروف!</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>* ایمیل: </ion-label>
+        <ion-input placeholder="example@domain.com" [(ngModel)]="user.email" formControlName="email" type="email" [class.invalid]="!reviewValidator.controls.email.valid && (reviewValidator.controls.email.dirty || submitAttempt)"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="!reviewValidator.controls.email.valid  && (submitAttempt || reviewValidator.controls.email.dirty)">
+        <p style="color:red">لطفا یک ایمیل معتبر وارد نمایید!</p>
+      </ion-item>
+      <ion-item [class.invalid]="!newRating && submitAttempt">
+        <label>امتیاز:</label>
+        <span (click)="newRating=1" > &nbsp;
+          <ion-icon small name="star" [color]="(newRating>=1)?'golden':'gray'"></ion-icon>
+        </span> &nbsp;
+        <span (click)="newRating=2" >
+          <ion-icon small name="star" [color]="(newRating>=2)?'golden':'gray'"></ion-icon>
+        </span> &nbsp;
+        <span (click)="newRating=3" >
+          <ion-icon small name="star" [color]="(newRating>=3)?'golden':'gray'"></ion-icon>
+        </span> &nbsp;
+        <span (click)="newRating=4" >
+          <ion-icon small name="star" [color]="(newRating>=4)?'golden':'gray'"></ion-icon>
+        </span> &nbsp;
+        <span (click)="newRating=5" >
+          <ion-icon small name="star" [color]="(newRating ==5)?'golden':'gray'"></ion-icon>
+        </span>
+      </ion-item>
+      <ion-item *ngIf="!newRating && (submitAttempt)">
+        <p style="color:red">لطفا یک امتیاز بدهید!</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>* دیدگاه:</ion-label>
+        <ion-textarea placeholder="دیدگاه شما ..." [(ngModel)]="review" formControlName="review" type="text" [class.invalid]="!reviewValidator.controls.review.valid && (reviewValidator.controls.review.dirty || submitAttempt)">
+        </ion-textarea>
+      </ion-item>
+      <ion-item *ngIf="!reviewValidator.controls.review.valid  && (submitAttempt || reviewValidator.controls.review.dirty)" place-holder>
+        <p style="color:red">لطفا یک دیدگاه در این قسمت وارد کنید حداقل 10 نویسه.</p>
+      </ion-item>
+
+      <button ion-button block round (click)="postReview()" [disabled]="submitAttempt">
+        <div class="center-vertical-horizontal">
+          ارسال دیدگاه
+          <ion-spinner class="button-spinner" *ngIf="submitAttempt" name="ios"></ion-spinner>
+        </div>
+      </button>
+
+    </ion-list>
+  </div>
+</ion-content>
+<ion-footer>
+  
+    <button *ngIf="product.price && product.in_stock" ion-button block round color="danger" (click)="addToCart()">
+      <ion-icon name="basket"></ion-icon> &nbsp; بِخَر - قیمت: {{product.price | number:0}} تومان
+    </button>
+    <ion-label *ngIf="!product.price || !product.in_stock" text-center block color="danger">
+      <b>نا موجود</b>
+    </ion-label>
+
+</ion-footer>

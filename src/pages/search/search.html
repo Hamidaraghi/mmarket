@@ -1,0 +1,65 @@
+<!--
+  Generated template for the SearchPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>جستجو: "{{searchQuery}}" </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+  <ion-spinner name="ios" *ngIf="products.length ==0 && !showEmptyResault" ></ion-spinner>
+  <ion-list>
+    <ion-item *ngFor="let product of products" text-wrap  (click)="openProductPage(product)">
+      <ion-thumbnail item-left>
+        <img [src]="product.images[0].src" />
+      </ion-thumbnail>
+      <h2> {{ product.name }} </h2>
+      <p>
+        <span [innerHTML]="product.short_description.substr(0, 50) + '...'"></span>
+        <span [innerHTML]="product.price_html"></span>
+        <span *ngIf="product.average_rating >= 1">
+          <ion-icon style="color: #d4af37" small name="star"></ion-icon>
+        </span>
+        <span *ngIf="product.average_rating >= 2">
+          <ion-icon style="color: #d4af37" small name="star"></ion-icon>
+        </span>
+        <span *ngIf="product.average_rating >= 3">
+          <ion-icon style="color: #d4af37" small name="star"></ion-icon>
+        </span>
+        <span *ngIf="product.average_rating >= 4">
+          <ion-icon style="color: #d4af37" small name="star"></ion-icon>
+        </span>
+        <span *ngIf="product.average_rating >= 5">
+          <ion-icon style="color: #d4af37" small name="star"></ion-icon>
+        </span>        
+      </p>
+      <ion-chip *ngIf="!product.in_stock"  >
+        <ion-icon name="close" color="gray"></ion-icon>
+        <span style="padding-left:5px; padding-right: 5px">
+          ناموجود
+      </span>
+      </ion-chip>
+      <ion-chip *ngIf="product.featured" color="danger" >
+        <ion-icon name="checkmark" ></ion-icon>  
+        <span style="padding-left:5px; padding-right: 5px">
+            پیشنهاد ویژه
+        </span>
+        </ion-chip>
+
+      <button ion-button icon clear item-right>
+        <ion-icon name="arrow-forward"></ion-icon>
+      </button>
+    </ion-item>
+  </ion-list>
+   <ion-infinite-scroll (ionInfinite)="loadMoreProducts($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <h1 *ngIf="showEmptyResault">جستجوی شما نتیجه ای در بر نداشت</h1>
+</ion-content>

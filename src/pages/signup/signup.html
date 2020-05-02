@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>ثبت نام</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div [formGroup]="signupValidator" >
+  <ion-list>
+    <ion-item-divider color="danger">مشخصات کاربر</ion-item-divider>
+    <ion-item>
+      <ion-label>نام</ion-label>
+      <ion-input type="text" [(ngModel)]="newUser.first_name" formControlName="firstName" ></ion-input>
+    </ion-item>
+    <ion-item *ngIf="!signupValidator.controls.firstName.valid  && (signupValidator.controls.firstName.dirty || submitAttempt)">
+      <p style="color:red">لطفا یک نام معتبر وارد نمایید.</p>
+    </ion-item>
+    <ion-item>
+      <ion-label>نام خانوادگی</ion-label>
+      <ion-input type="text" [(ngModel)]="newUser.last_name" formControlName="lastName" ></ion-input>
+    </ion-item>
+    <ion-item *ngIf="!signupValidator.controls.lastName.valid  && (signupValidator.controls.lastName.dirty || submitAttempt)">
+      <p style="color:red">لطفا یک نام خانوادگی معتبر وارد نمایید.</p>
+    </ion-item>
+    <ion-item>
+      <ion-label>* تلفن همراه</ion-label>
+      <ion-input [(ngModel)]="newUser.username" type="tel" clearInput formControlName="userPhone" placeholder="09XXXXXXXXX"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="!signupValidator.controls.userPhone.valid  && (signupValidator.controls.userPhone.dirty || submitAttempt)">
+      <p style="color:red">یک شماره تلفن همراه معتبر 11 رقمی وارد نمایید. </p>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label>*گذرواژه</ion-label>
+      <ion-input #pass type="password" [(ngModel)]="newUser.password" formControlName="password" ></ion-input>
+    </ion-item>
+    <ion-item *ngIf="!signupValidator.controls.password.valid  && (signupValidator.controls.password.dirty || submitAttempt)">
+      <p style="color:red">حداقل طول گذرواژه 6 کاراکتر باید باشد</p>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>*تکرار گذرواژه</ion-label>
+      <ion-input #repass type="password" [(ngModel)]="newUser.confirm_password" formControlName="password" ></ion-input>
+    </ion-item>
+    <ion-item *ngIf="pass.value != repass.value">
+      <p style="color:red">گذرواژه و تکرار آن یکسان نیستند</p>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>کد معرف (اختیاری)</ion-label>
+      <ion-input [(ngModel)]="affiliateId" clearInput formControlName="affiliateId" placeholder="شماره موبایل یا کد معرف"></ion-input>
+    </ion-item>
+ <!--    <ion-item *ngIf="!signupValidator.controls.affiliateId.valid  && (signupValidator.controls.affiliateId.dirty || submitAttempt)">
+      <p style="color:red">لطفا برای کد معرف فقط عدد وارد کنید</p>
+    </ion-item> -->
+
+  </ion-list>
+  <ion-item>
+    <ion-label>قوانین و مقررات را می پذیرم</ion-label>
+    <ion-checkbox checked="false" formControlName="rules" [class.invalid]="!signupValidator.controls.rules.valid && (signupValidator.controls.rules.dirty || submitAttempt)"></ion-checkbox>
+  </ion-item>
+  <ion-item *ngIf="!signupValidator.controls.rules.valid  && (signupValidator.controls.rules.dirty || submitAttempt)">
+    <p style="color:red">شما برای ادامه می بایست قوانین را بپذیرید! </p>
+  </ion-item>
+
+</div>
+</ion-content>
+
+<ion-footer>
+  <button ion-button block round color="danger" (click)="signup()" [disabled]="pass.value != repass.value " >ثبت نام</button>
+</ion-footer>

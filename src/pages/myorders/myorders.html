@@ -1,0 +1,41 @@
+<!--
+  Generated template for the MyordersPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>سفارشات من</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding center>
+
+    <ion-spinner *ngIf="isLoading"></ion-spinner>
+
+    <div *ngIf="!isLoading && (myOrders.length == 0)">
+      <p>چیزی یافت نشد</p>
+    </div>
+  
+  <ion-list>
+    <ion-item *ngFor="let myOrder of myOrders" text-wrap (click)="openOrderDetails(myOrder)">
+      <h2>شماره سفارش: {{myOrder.id}} - {{myOrder.line_items.length}} کالا</h2>
+      <p>
+        <span>زمان ایجاد سفارش: {{myOrder.date_created | jalali}} </span>
+      </p>
+      <p>
+        <span>وضعیت: {{myOrder.status}}</span>
+        <span>مجموع: {{myOrder.total | number:0}} تومان</span>
+<!--         <span>user: {{myOrder.customer_id}}</span> -->
+      </p>
+      <button ion-button item-right icon clear>
+        <ion-icon name="arrow-forward"></ion-icon>
+      </button>
+    </ion-item>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="getOrders($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

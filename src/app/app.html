@@ -1,0 +1,7 @@
+<!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>
+<ion-footer style="z-index:1000; background-color:gainsboro" *ngIf="disconnect">
+    <ion-label text-center block color="danger">
+        <b>ارتباط با شبکه برقرار نیست</b>
+      </ion-label>
+</ion-footer>

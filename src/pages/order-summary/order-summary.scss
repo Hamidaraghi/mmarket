@@ -1,0 +1,12 @@
+page-order-summary {    
+ 
+        .order_list {
+          max-height: 300px;
+          overflow-y: scroll;
+        }
+
+        .invalid {
+          border: 1px solid #ea6153;
+      }
+    
+}
